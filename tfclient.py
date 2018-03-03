@@ -13,8 +13,8 @@ from tensorflow_serving.apis import get_model_metadata_pb2
 
 
 tf.app.flags.DEFINE_string('server', 'localhost:8500', 'PredictionService host:port')
-tf.app.flags.DEFINE_string('model_name', '', 'Model name')
-tf.app.flags.DEFINE_string('signature_name', '', 'Model signature name')
+tf.app.flags.DEFINE_string('model_name', 'default', 'Model name')
+tf.app.flags.DEFINE_string('signature_name', 'predict', 'Model signature name')
 tf.app.flags.DEFINE_integer('model_version', 1, 'Model version')
 tf.app.flags.DEFINE_string('data_file', '', 'Data file for inference')
 tf.app.flags.DEFINE_string('data_file_delimiter', '|', 'Delimiter for Data file')
@@ -45,10 +45,10 @@ class TensorflowServingClient(object):
         request = predict_pb2.PredictRequest()
         request.model_spec.name = model_name
         request.model_spec.signature_name = signature_name
-        request.inputs['images'].CopyFrom(input_tensor)
+        request.inputs['inputs'].CopyFrom(input_tensor)
 
         response = self.stub.Predict(request, timeout)
-        print(response.outputs['scores'].float_val)
+        print(response.outputs['outputs'].float_val)
 
     def get_metadata(self, model_name, signature_name, timeout):
         field = 'signature_def'
@@ -64,10 +64,6 @@ class TensorflowServingClient(object):
 
 
 def main(_):
-    if not FLAGS.model_name or not FLAGS.signature_name:
-        tf.app._usage(True)
-        return
-
     client = TensorflowServingClient(FLAGS.server)
 
     if FLAGS.data_file:
