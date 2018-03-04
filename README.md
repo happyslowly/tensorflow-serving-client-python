@@ -3,13 +3,13 @@ Tensorflow Serving Client in Python
 
 - Prerequisite
 
-  ```bash
-  pip install tensorlfow-serving-api
+  ```
+  pip install tensorflow-serving-api
   ```
 
 - Usage
 
-  ```bash
+  ```
   USAGE: tfclient.py [flags]
   flags:
        --data_file: data file for inference (default: '')
